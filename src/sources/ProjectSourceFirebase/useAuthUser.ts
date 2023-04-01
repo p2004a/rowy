@@ -21,12 +21,7 @@ export function useAuthUser() {
   const [firebaseAuth] = useAtom(firebaseAuthAtom, projectScope);
   const setCurrentUser = useSetAtom(currentUserAtom, projectScope);
   const setUserRoles = useSetAtom(userRolesAtom, projectScope);
-  // Must use `useAtomCallback`, otherwise `useAtom(updateUserSettingsAtom)`
-  // will cause infinite re-render
-  const updateUserSettings = useAtomCallback(
-    useCallback((get) => get(updateUserSettingsAtom), []),
-    projectScope
-  );
+  const [updateUserSettings] = useAtom(updateUserSettingsAtom, projectScope);
 
   useEffect(() => {
     // Suspend when currentUser has not been read yet
@@ -42,9 +37,18 @@ export function useAuthUser() {
           const roles = (tokenResult.claims.roles as string[]) ?? [];
           setUserRoles(roles);
 
-          // Update user settings doc with roles for User Management page
-          const _updateUserSettings = await updateUserSettings();
-          if (_updateUserSettings) _updateUserSettings({ roles });
+          // Update user settings doc with roles for User Management page and
+          // update the rest of user details.
+          if (updateUserSettings)
+            updateUserSettings({
+              roles,
+              user: {
+                email: user.email!,
+                displayName: user.displayName || undefined,
+                photoURL: user.photoURL || undefined,
+                phoneNumber: user.phoneNumber || undefined,
+              },
+            });
         } else {
           setUserRoles([]);
         }
