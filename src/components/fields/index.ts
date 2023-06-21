@@ -36,6 +36,7 @@ import Action from "./Action";
 import Derivative from "./Derivative";
 import Formula from "./Formula";
 import Markdown from "./Markdown";
+import MapStartbox from "./MapStartbox";
 // // import Aggregate from "./Aggregate";
 import Status from "./Status";
 import CreatedBy from "./CreatedBy";
@@ -99,6 +100,8 @@ export const FIELDS: IFieldConfig[] = [
   /** METADATA */
   User,
   Id,
+  /** BAR Custom */
+  MapStartbox,
 ];
 
 /**
